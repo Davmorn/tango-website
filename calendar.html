@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar &amp; Events — Tango Boise</title>
+  <meta name="description" content="Tango Boise event calendar — classes, practicas, milongas, and regional tango festivals in Idaho and the Northwest.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .upcoming-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 3rem; }
+    .upcoming-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      transition: border-color var(--transition);
+    }
+    .upcoming-item:hover { border-color: var(--gold); }
+    .upcoming-item .event-date-block { min-width: 64px; }
+    .upcoming-item h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
+    .upcoming-item .event-meta { font-size: 0.85rem; }
+    .upcoming-item .event-link { font-size: 0.85rem; color: var(--gold); white-space: nowrap; }
+    .upcoming-item .event-link:hover { color: var(--gold-light); }
+    @media (max-width: 600px) {
+      .upcoming-item { grid-template-columns: auto 1fr; }
+      .upcoming-item .event-link { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Tango<span>Boise</span></a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html">Welcome</a></li>
+      <li><a href="beginners.html">Beginners</a></li>
+      <li><a href="calendar.html">Calendar</a></li>
+      <li><a href="membership.html">Membership</a></li>
+      <li><a href="health-safety.html">Health &amp; Safety</a></li>
+      <li><a href="about.html">About &amp; Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <p class="eyebrow">What's On</p>
+    <h1>Calendar &amp; Events</h1>
+    <p>Classes, practicas, milongas, and regional festivals. There's always something on the floor.</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- FEATURED EVENT -->
+    <div class="featured-event" style="margin-bottom:3.5rem;">
+      <div>
+        <div class="featured-label">Annual Festival · Boise, Idaho</div>
+        <h2>Tree City Tango 2026</h2>
+        <p class="event-date-text">August 21–23, 2026 &nbsp;·&nbsp; Registration opening soon</p>
+        <p style="color:rgba(245,240,232,0.7);max-width:480px;margin-bottom:1.5rem;font-size:0.95rem;">
+          Tango Boise's annual festival brings together dancers from across the region for workshops, milongas, and connection. Details and registration link coming soon.
+        </p>
+        <a href="about.html" class="btn btn-outline">Contact Us for Details</a>
+      </div>
+      <div class="featured-deco" aria-hidden="true">2026</div>
+    </div>
+
+    <!-- UPCOMING EVENTS -->
+    <h2 style="margin-bottom:0.75rem;">Upcoming Events</h2>
+    <div class="section-divider" style="margin:0 0 2rem;"></div>
+
+    <!-- ============================================================
+         MAINTAINER NOTE: Edit the events below to update this list.
+         Each .upcoming-item is one event. Duplicate or remove as needed.
+         ============================================================ -->
+    <div class="upcoming-list">
+
+      <div class="upcoming-item">
+        <div class="event-date-block">
+          <div class="month">Aug</div>
+          <div class="day">21</div>
+        </div>
+        <div class="event-info">
+          <span class="event-tag">Annual Festival</span>
+          <h3>Tree City Tango — Day 1</h3>
+          <div class="event-meta">
+            <span>All day &nbsp;·&nbsp; Boise, Idaho</span>
+            <span>Workshops, milonga — details TBA</span>
+          </div>
+        </div>
+        <a href="about.html" class="event-link">Details →</a>
+      </div>
+
+      <div class="upcoming-item">
+        <div class="event-date-block">
+          <div class="month">Aug</div>
+          <div class="day">22</div>
+        </div>
+        <div class="event-info">
+          <span class="event-tag">Annual Festival</span>
+          <h3>Tree City Tango — Day 2</h3>
+          <div class="event-meta">
+            <span>All day &nbsp;·&nbsp; Boise, Idaho</span>
+          </div>
+        </div>
+        <a href="about.html" class="event-link">Details →</a>
+      </div>
+
+      <div class="upcoming-item">
+        <div class="event-date-block">
+          <div class="month">Aug</div>
+          <div class="day">23</div>
+        </div>
+        <div class="event-info">
+          <span class="event-tag">Annual Festival</span>
+          <h3>Tree City Tango — Day 3</h3>
+          <div class="event-meta">
+            <span>All day &nbsp;·&nbsp; Boise, Idaho</span>
+          </div>
+        </div>
+        <a href="about.html" class="event-link">Details →</a>
+      </div>
+
+    </div>
+
+    <!-- CALENDAR TABS -->
+    <h2 style="margin-bottom:0.75rem;">Full Calendar</h2>
+    <div class="section-divider" style="margin:0 0 1.5rem;"></div>
+
+    <div class="calendar-tabs" role="tablist" aria-label="Calendar view">
+      <button class="cal-tab active" data-target="cal-local" role="tab" aria-selected="true">Boise Events</button>
+      <button class="cal-tab" data-target="cal-regional" role="tab" aria-selected="false">Regional Calendar</button>
+    </div>
+
+    <!-- LOCAL CALENDAR -->
+    <div id="cal-local" class="cal-panel" role="tabpanel">
+      <!-- Desktop: month/week view -->
+      <div class="calendar-embed cal-desktop">
+        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23bd9b60&ctz=America%2FDenver&showPrint=0&title=Tango%20in%20Boise&src=cGZiYnF0YmNvNXJiYm5oZjZqZHVjbzJlNnNAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=M252aXU2NzZicTJmNGdlc2VsZHRxM2c1NHNAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=dGZ1cXA0bjZvcmVydmVtY21jc2w5djhuNWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23D81B60&color=%23D81B60&color=%23A79B8E"
+                style="border:none;" width="100%" height="600" frameborder="0" scrolling="no"
+                title="Tango in Boise — local event calendar"></iframe>
+      </div>
+      <!-- Mobile: agenda view -->
+      <div class="calendar-embed cal-mobile">
+        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23bd9b60&ctz=America%2FDenver&showPrint=0&title=Tango%20in%20Boise&mode=AGENDA&src=cGZiYnF0YmNvNXJiYm5oZjZqZHVjbzJlNnNAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=M252aXU2NzZicTJmNGdlc2VsZHRxM2c1NHNAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=dGZ1cXA0bjZvcmVydmVtY21jc2w5djhuNWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23D81B60&color=%23D81B60&color=%23A79B8E"
+                style="border:none;" width="100%" height="600" frameborder="0" scrolling="no"
+                title="Tango in Boise — agenda view"></iframe>
+      </div>
+      <p class="calendar-hint">Tip: on phones, rotate to landscape for month view or use portrait for agenda view.</p>
+    </div>
+
+    <!-- REGIONAL CALENDAR -->
+    <div id="cal-regional" class="cal-panel" role="tabpanel" hidden>
+      <!-- Desktop: month view -->
+      <div class="calendar-embed cal-desktop">
+        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23bd9b60&ctz=America%2FDenver&showPrint=0&title=Tango%20Boise%20Regional%20Calendar&mode=MONTH&src=M252aXU2NzZicTJmNGdlc2VsZHRxM2c1NHNAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=cmJzdWtndjhmMHQwZmM1dDc5a2ZjNGNtNXNAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23D81B60&color=%23F6BF26"
+                style="border:none;" width="100%" height="600" frameborder="0" scrolling="no"
+                title="Regional tango calendar"></iframe>
+      </div>
+      <!-- Mobile: agenda view -->
+      <div class="calendar-embed cal-mobile">
+        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23bd9b60&ctz=America%2FDenver&showPrint=0&title=Tango%20Boise%20Regional%20Calendar&mode=AGENDA&src=M252aXU2NzZicTJmNGdlc2VsZHRxM2c1NHNAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=cmJzdWtndjhmMHQwZmM1dDc5a2ZjNGNtNXNAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23D81B60&color=%23F6BF26"
+                style="border:none;" width="100%" height="600" frameborder="0" scrolling="no"
+                title="Regional tango calendar — agenda view"></iframe>
+      </div>
+      <p class="calendar-hint">Idaho · Utah · Colorado · Montana · Oregon · Washington — festivals, marathons &amp; workshops.</p>
+    </div>
+
+  </div>
+</main>
+
+<section class="newsletter-section">
+  <div class="container">
+    <div class="newsletter-inner">
+      <h2>Never Miss an Event</h2>
+      <p>Subscribe to the Tango Boise newsletter for event announcements and special discount codes for members.</p>
+      <!-- TODO: Replace href with your Mailchimp signup URL -->
+      <div class="newsletter-form">
+        <input type="email" placeholder="your@email.com" aria-label="Email address" readonly onclick="window.open('https://mailchimp.com','_blank')">
+        <a href="https://mailchimp.com" class="btn btn-gold" target="_blank" rel="noopener">Subscribe</a>
+      </div>
+      <p class="newsletter-footnote">Powered by Mailchimp. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo">Tango<span>Boise</span></div>
+        <p>A registered 501(c)(3) nonprofit dedicated to nurturing Argentine tango culture in the Treasure Valley since 2014.</p>
+        <span class="footer-badge">501(c)(3) Nonprofit</span>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="index.html">Welcome</a></li>
+          <li><a href="beginners.html">Beginners Guide</a></li>
+          <li><a href="calendar.html">Calendar</a></li>
+          <li><a href="membership.html">Membership</a></li>
+          <li><a href="health-safety.html">Health &amp; Safety</a></li>
+          <li><a href="about.html">About &amp; Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Get Involved</h4>
+        <ul>
+          <li><a href="membership.html">Become a Member</a></li>
+          <li><a href="beginners.html">Learn to Dance</a></li>
+          <li><a href="calendar.html">Upcoming Events</a></li>
+          <li><a href="about.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2014–2026 Tango Boise Inc. All rights reserved.</span>
+      <span>Photo credits: John Miller, Denver CO</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
