@@ -69,6 +69,42 @@ if (lightbox) {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 }
 
+// Event details modal (upcoming events list)
+const eventModal = document.getElementById('event-modal');
+const eventModalBody = document.getElementById('event-modal-body');
+const eventModalClose = document.getElementById('event-modal-close');
+
+if (eventModal) {
+  const openEventModal = (item) => {
+    const tpl = item.querySelector('.event-detail-tpl');
+    if (!tpl) return;
+    eventModalBody.replaceChildren(tpl.content.cloneNode(true));
+    eventModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    eventModalClose?.focus();
+  };
+
+  const closeEventModal = () => {
+    eventModal.classList.remove('open');
+    eventModalBody.replaceChildren();
+    document.body.style.overflow = '';
+  };
+
+  document.querySelectorAll('.upcoming-item').forEach(item => {
+    item.addEventListener('click', () => openEventModal(item));
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openEventModal(item);
+      }
+    });
+  });
+
+  eventModalClose?.addEventListener('click', closeEventModal);
+  eventModal.addEventListener('click', (e) => { if (e.target === eventModal) closeEventModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeEventModal(); });
+}
+
 // Calendar tabs
 document.querySelectorAll('.cal-tab').forEach(tab => {
   tab.addEventListener('click', () => {

@@ -22,7 +22,8 @@
       align-items: center;
       transition: border-color var(--transition);
     }
-    .upcoming-item:hover { border-color: var(--gold); }
+    .upcoming-item:hover, .upcoming-item:focus-visible { border-color: var(--gold); }
+    .upcoming-item { cursor: pointer; }
     .upcoming-item .event-date-block { min-width: 64px; }
     .upcoming-item h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
     .upcoming-item .event-meta { font-size: 0.85rem; }
@@ -32,6 +33,40 @@
       .upcoming-item { grid-template-columns: auto 1fr; }
       .upcoming-item .event-link { grid-column: 1 / -1; }
     }
+
+    /* Event details modal */
+    .event-modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.75);
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    .event-modal-overlay.open { display: flex; }
+    .event-modal {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 480px; width: 100%;
+      max-height: 85vh; overflow-y: auto;
+      position: relative;
+    }
+    .event-modal h3 { font-size: 1.3rem; margin: 0.5rem 0 0.75rem; }
+    .event-modal .modal-datetime { color: var(--text); font-size: 0.95rem; margin-bottom: 0.75rem; }
+    .event-modal .modal-venue { font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .event-modal .modal-address { color: var(--text-muted); }
+    .event-modal .modal-directions { font-size: 0.85rem; color: var(--gold); }
+    .event-modal .modal-directions:hover { color: var(--gold-light); }
+    .event-modal p { font-size: 0.9rem; color: rgba(245,240,232,0.8); margin-bottom: 0.75rem; line-height: 1.5; }
+    .event-modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: var(--bg-surface-2); border: 1px solid var(--border);
+      color: var(--text); border-radius: 50%;
+      width: 32px; height: 32px; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .event-modal-close:hover { background: var(--accent); }
   </style>
 </head>
 <body>
@@ -91,21 +126,7 @@
          from the Tango Boise Google Calendars. Add/move/remove events there. -->
     <div class="upcoming-list">
       <!-- SYNC:EVENTS:BEGIN -->
-      <div class="upcoming-item">
-        <div class="event-date-block">
-          <div class="month">Jun</div>
-          <div class="day">30</div>
-        </div>
-        <div class="event-info">
-          <span class="event-tag">Event</span>
-          <h3>FREE Tango Taster - Try Out Tango</h3>
-          <div class="event-meta">
-            <span>8:00 PM – 9:00 PM &nbsp;·&nbsp; Idaho DanceSport</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="upcoming-item">
+      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">Jul</div>
           <div class="day">5</div>
@@ -117,9 +138,16 @@
             <span>7:30 PM – 10:30 PM &nbsp;·&nbsp; Solid Grill &amp; Bar</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">Practica</span>
+          <h3>All-Levels Lesson and Practica</h3>
+          <p class="modal-datetime">Sunday, July 5, 2026<br>7:30 PM – 10:30 PM</p>
+          <p class="modal-venue">Solid Grill &amp; Bar<br><span class="modal-address">405 S 8th St # 100, Boise, ID 83702, USA</span></p><p><a href="https://www.google.com/maps/search/?api=1&query=Solid%20Grill%20%26%20Bar%2C%20405%20S%208th%20St%20%23%20100%2C%20Boise%2C%20ID%2083702%2C%20USA" target="_blank" rel="noopener" class="modal-directions">Get Directions</a></p>
+          <p>by Solid Tango LLC</p><p>Come make your tango SOLID at our weekly class and practica! If you&#x27;ve never been before, prepare for welcoming smiles, a warm, beginner-friendly atmosphere, and a relaxed vibe. We&#x27;re excited you&#x27;re joining us!</p><p>*****FEATURES*****<br>*Class is 1 hour, all-levels, with the subject of the week chosen by the instructor based on who is in attendance.<br>*Practica is 2 hours. You choose to social dance, practice with others, or grab the instructor(s) for some extra help.<br>*Music is in tanda-cortina format, mostly traditional tango with some alt mixed in.</p><p>*****SCHEDULE*****<br>7:30 -…</p>
+        </template>
       </div>
 
-      <div class="upcoming-item">
+      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">Jul</div>
           <div class="day">7</div>
@@ -131,9 +159,16 @@
             <span>7:00 PM – 8:00 PM</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">Event</span>
+          <h3>Adv Beginner Series (July)</h3>
+          <p class="modal-datetime">Tuesday, July 7, 2026<br>7:00 PM – 8:00 PM</p>
+          
+          <p>Advanced Beginner Series Building on the basics and growing confidence   This month&#x27;s subject: Ochos Each series focuses on a specific intermediate topic—such as sacadas, back crosses, and rhythmic combos. Topics rotate each cycle, so you can take it multiple times and keep expanding your dance skillset.   👉 4-Week Series 👉 no partner needed  PRICING Full Series, pay ahead (4 classes): $60     Drop-in, per class (space permitting): $20 ​ Reserve Your Spot The series format ensures a consistent learning experience, steady progression, and a shared foundation for all students.</p>
+        </template>
       </div>
 
-      <div class="upcoming-item">
+      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">Jul</div>
           <div class="day">7</div>
@@ -145,9 +180,16 @@
             <span>8:00 PM – 9:00 PM &nbsp;·&nbsp; Idaho DanceSport</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">Event</span>
+          <h3>Beginner Series - Zero to Tango</h3>
+          <p class="modal-datetime">Tuesday, July 7, 2026<br>8:00 PM – 9:00 PM</p>
+          <p class="modal-venue">Idaho DanceSport<br><span class="modal-address">600 S Orchard St, Boise, ID 83705, USA</span></p><p><a href="https://www.google.com/maps/search/?api=1&query=Idaho%20DanceSport%2C%20600%20S%20Orchard%20St%2C%20Boise%2C%20ID%2083705%2C%20USA" target="_blank" rel="noopener" class="modal-directions">Get Directions</a></p>
+          <p>Zero to Tango in 4 Weeks   The first step for beginners Walk in new to tango—graduate with new skills, new friends, and a community of your own. This progressive Tango Intro Series is designed for brand-new dancers: ​ Absolute Basics &amp; Foundational Patterns 👉 no experience required 👉 no partner needed  PRICING Full Series, pay ahead (4 classes): $60     Drop-in, per class (space permitting): $20 ​ Reserve Your Spot The series format ensures a consistent learning experience, steady progression, and a shared foundation for all students.</p>
+        </template>
       </div>
 
-      <div class="upcoming-item">
+      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">Jul</div>
           <div class="day">8</div>
@@ -159,9 +201,16 @@
             <span>7:00 PM – 8:30 PM &nbsp;·&nbsp; Idaho DanceSport</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">Event</span>
+          <h3>Intermediate Series</h3>
+          <p class="modal-datetime">Wednesday, July 8, 2026<br>7:00 PM – 8:30 PM</p>
+          <p class="modal-venue">Idaho DanceSport<br><span class="modal-address">600 S Orchard St, Boise, ID 83705, USA</span></p><p><a href="https://www.google.com/maps/search/?api=1&query=Idaho%20DanceSport%2C%20600%20S%20Orchard%20St%2C%20Boise%2C%20ID%2083705%2C%20USA" target="_blank" rel="noopener" class="modal-directions">Get Directions</a></p>
+          <p>Intermediate Series   Deepening understanding and solidifying your dance   This month&#x27;s subject: Sacadas  Each series focuses on a specific intermediate topic—such as sacadas, back crosses, and rhythmic combos. Topics rotate each cycle, so you can take it multiple times and keep expanding your dance skillset.   👉 4-Week Series 👉 no partner needed    PRICING Full Series, pay ahead (4 classes): $60     Drop-in, per class (space permitting): $20 ​ Reserve Your Spot The series format ensures a consistent learning experience, steady progression, and a shared foundation for all students.</p>
+        </template>
       </div>
 
-      <div class="upcoming-item">
+      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">Jul</div>
           <div class="day">12</div>
@@ -173,9 +222,16 @@
             <span>7:30 PM – 10:30 PM &nbsp;·&nbsp; Solid Grill &amp; Bar</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">Practica</span>
+          <h3>All-Levels Lesson and Practica</h3>
+          <p class="modal-datetime">Sunday, July 12, 2026<br>7:30 PM – 10:30 PM</p>
+          <p class="modal-venue">Solid Grill &amp; Bar<br><span class="modal-address">405 S 8th St # 100, Boise, ID 83702, USA</span></p><p><a href="https://www.google.com/maps/search/?api=1&query=Solid%20Grill%20%26%20Bar%2C%20405%20S%208th%20St%20%23%20100%2C%20Boise%2C%20ID%2083702%2C%20USA" target="_blank" rel="noopener" class="modal-directions">Get Directions</a></p>
+          <p>by Solid Tango LLC</p><p>Come make your tango SOLID at our weekly class and practica! If you&#x27;ve never been before, prepare for welcoming smiles, a warm, beginner-friendly atmosphere, and a relaxed vibe. We&#x27;re excited you&#x27;re joining us!</p><p>*****FEATURES*****<br>*Class is 1 hour, all-levels, with the subject of the week chosen by the instructor based on who is in attendance.<br>*Practica is 2 hours. You choose to social dance, practice with others, or grab the instructor(s) for some extra help.<br>*Music is in tanda-cortina format, mostly traditional tango with some alt mixed in.</p><p>*****SCHEDULE*****<br>7:30 -…</p>
+        </template>
       </div>
 
-      <div class="upcoming-item">
+      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">Jul</div>
           <div class="day">14</div>
@@ -187,9 +243,16 @@
             <span>7:00 PM – 8:00 PM</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">Event</span>
+          <h3>Adv Beginner Series (July)</h3>
+          <p class="modal-datetime">Tuesday, July 14, 2026<br>7:00 PM – 8:00 PM</p>
+          
+          <p>Advanced Beginner Series Building on the basics and growing confidence   This month&#x27;s subject: Ochos Each series focuses on a specific intermediate topic—such as sacadas, back crosses, and rhythmic combos. Topics rotate each cycle, so you can take it multiple times and keep expanding your dance skillset.   👉 4-Week Series 👉 no partner needed  PRICING Full Series, pay ahead (4 classes): $60     Drop-in, per class (space permitting): $20 ​ Reserve Your Spot The series format ensures a consistent learning experience, steady progression, and a shared foundation for all students.</p>
+        </template>
       </div>
 
-      <div class="upcoming-item">
+      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">Jul</div>
           <div class="day">14</div>
@@ -201,6 +264,34 @@
             <span>8:00 PM – 9:00 PM &nbsp;·&nbsp; Idaho DanceSport</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">Event</span>
+          <h3>Beginner Series - Zero to Tango</h3>
+          <p class="modal-datetime">Tuesday, July 14, 2026<br>8:00 PM – 9:00 PM</p>
+          <p class="modal-venue">Idaho DanceSport<br><span class="modal-address">600 S Orchard St, Boise, ID 83705, USA</span></p><p><a href="https://www.google.com/maps/search/?api=1&query=Idaho%20DanceSport%2C%20600%20S%20Orchard%20St%2C%20Boise%2C%20ID%2083705%2C%20USA" target="_blank" rel="noopener" class="modal-directions">Get Directions</a></p>
+          <p>Zero to Tango in 4 Weeks   The first step for beginners Walk in new to tango—graduate with new skills, new friends, and a community of your own. This progressive Tango Intro Series is designed for brand-new dancers: ​ Absolute Basics &amp; Foundational Patterns 👉 no experience required 👉 no partner needed  PRICING Full Series, pay ahead (4 classes): $60     Drop-in, per class (space permitting): $20 ​ Reserve Your Spot The series format ensures a consistent learning experience, steady progression, and a shared foundation for all students.</p>
+        </template>
+      </div>
+
+      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
+        <div class="event-date-block">
+          <div class="month">Jul</div>
+          <div class="day">15</div>
+        </div>
+        <div class="event-info">
+          <span class="event-tag">Event</span>
+          <h3>Intermediate Series</h3>
+          <div class="event-meta">
+            <span>7:00 PM – 8:30 PM &nbsp;·&nbsp; Idaho DanceSport</span>
+          </div>
+        </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">Event</span>
+          <h3>Intermediate Series</h3>
+          <p class="modal-datetime">Wednesday, July 15, 2026<br>7:00 PM – 8:30 PM</p>
+          <p class="modal-venue">Idaho DanceSport<br><span class="modal-address">600 S Orchard St, Boise, ID 83705, USA</span></p><p><a href="https://www.google.com/maps/search/?api=1&query=Idaho%20DanceSport%2C%20600%20S%20Orchard%20St%2C%20Boise%2C%20ID%2083705%2C%20USA" target="_blank" rel="noopener" class="modal-directions">Get Directions</a></p>
+          <p>Intermediate Series   Deepening understanding and solidifying your dance   This month&#x27;s subject: Sacadas  Each series focuses on a specific intermediate topic—such as sacadas, back crosses, and rhythmic combos. Topics rotate each cycle, so you can take it multiple times and keep expanding your dance skillset.   👉 4-Week Series 👉 no partner needed    PRICING Full Series, pay ahead (4 classes): $60     Drop-in, per class (space permitting): $20 ​ Reserve Your Spot The series format ensures a consistent learning experience, steady progression, and a shared foundation for all students.</p>
+        </template>
       </div>
     <!-- SYNC:EVENTS:END -->
     </div>
@@ -301,6 +392,13 @@
     </div>
   </div>
 </footer>
+
+<div class="event-modal-overlay" id="event-modal" role="dialog" aria-modal="true" aria-label="Event details">
+  <div class="event-modal">
+    <button class="event-modal-close" id="event-modal-close" aria-label="Close">&times;</button>
+    <div id="event-modal-body"></div>
+  </div>
+</div>
 
 <script src="js/main.js"></script>
 </body>

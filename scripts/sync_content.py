@@ -23,6 +23,7 @@ import re
 import urllib.request
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
+from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
 import recurring_ical_events
@@ -46,16 +47,19 @@ IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 
 CANCELLED_RE = re.compile(r"^\s*cancell?ed\b", re.IGNORECASE)
 PREFIX_RE = re.compile(r"^[A-Z]{2,}:\s*")
+TAG_STRIP_RE = re.compile(r"<[^>]+>")
+DESCRIPTION_MAX_CHARS = 600
 
 
 class Event:
-    def __init__(self, summary, start, end, all_day, location, recurring_freq):
+    def __init__(self, summary, start, end, all_day, location, recurring_freq, description=""):
         self.summary = summary
         self.start = start
         self.end = end
         self.all_day = all_day
         self.location = location
         self.recurring_freq = recurring_freq
+        self.description = description
 
     @property
     def duration_days(self):
@@ -66,6 +70,20 @@ class Event:
     @property
     def clean_title(self):
         return html.escape(PREFIX_RE.sub("", self.summary).strip())
+
+    @property
+    def clean_description(self):
+        """Plain-text description: calendar entries embed raw HTML (and even
+        an `<html-blob>` wrapper), which we strip rather than render so we're
+        not injecting third-party markup into the page."""
+        if not self.description:
+            return ""
+        text = html.unescape(TAG_STRIP_RE.sub(" ", self.description))
+        text = re.sub(r"[ \t]+", " ", text)
+        text = re.sub(r"\n\s*\n+", "\n\n", text).strip()
+        if len(text) > DESCRIPTION_MAX_CHARS:
+            text = text[:DESCRIPTION_MAX_CHARS].rsplit(" ", 1)[0] + "…"
+        return text
 
     @property
     def dedupe_key(self):
@@ -124,6 +142,7 @@ def fetch_events():
                     all_day=all_day,
                     location=str(vevent.get("LOCATION", "")).strip(),
                     recurring_freq=freq,
+                    description=str(vevent.get("DESCRIPTION", "")).strip(),
                 )
             )
 
@@ -172,6 +191,35 @@ def venue_name(event):
     if not event.location:
         return ""
     return html.escape(event.location.split(",")[0].strip())
+
+
+def street_address(event):
+    """The location minus its leading venue name (shown separately)."""
+    parts = event.location.split(",", 1)
+    if len(parts) < 2:
+        return ""
+    return html.escape(parts[1].strip())
+
+
+def full_date_text(event):
+    """Longer date text for the event-details view (vs. the compact date badge)."""
+    if event.recurring_freq == "WEEKLY":
+        return f"Every {event.start.strftime('%A')}"
+    if event.recurring_freq == "MONTHLY":
+        return f"Monthly, {event.start.strftime('%A')}"
+    return event.start.strftime("%A, %B %-d, %Y")
+
+
+def render_description_html(event):
+    text = event.clean_description
+    if not text:
+        return ""
+    paragraphs = [
+        f"<p>{html.escape(p).replace(chr(10), '<br>')}</p>"
+        for p in re.split(r"\n\s*\n", text)
+        if p.strip()
+    ]
+    return "".join(paragraphs)
 
 
 def pick_featured(events):
@@ -256,7 +304,23 @@ def render_calendar_events(events, limit=8):
         month_label, day_label = date_block(ev)
         venue = venue_name(ev)
         location_text = f" &nbsp;·&nbsp; {venue}" if venue else ""
-        items.append(f"""      <div class="upcoming-item">
+
+        address = street_address(ev)
+        location_detail = ""
+        if venue:
+            location_detail = f'<p class="modal-venue">{venue}'
+            if address:
+                location_detail += f'<br><span class="modal-address">{address}</span>'
+            location_detail += "</p>"
+            if ev.location:
+                maps_url = f"https://www.google.com/maps/search/?api=1&query={quote(ev.location)}"
+                location_detail += (
+                    f'<p><a href="{maps_url}" target="_blank" rel="noopener" '
+                    f'class="modal-directions">Get Directions</a></p>'
+                )
+        description_html = render_description_html(ev)
+
+        items.append(f"""      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">{month_label}</div>
           <div class="day">{day_label}</div>
@@ -268,6 +332,13 @@ def render_calendar_events(events, limit=8):
             <span>{time_range_text(ev)}{location_text}</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          <span class="event-tag">{classify_tag(ev)}</span>
+          <h3>{ev.clean_title}</h3>
+          <p class="modal-datetime">{full_date_text(ev)}<br>{time_range_text(ev)}</p>
+          {location_detail}
+          {description_html}
+        </template>
       </div>""")
     return "\n\n".join(items)
 
