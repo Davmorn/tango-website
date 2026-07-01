@@ -18,9 +18,13 @@ To use a custom domain (e.g. `tangoboise.com`):
 
 ## Updating Content
 
-### Adding/editing upcoming events (`calendar.html`)
+### Upcoming events (home page + `calendar.html`)
 
-Look for the block marked `MAINTAINER NOTE` in `calendar.html`. Each event is an `.upcoming-item` div. Copy/paste one to add a new event, or delete one to remove it.
+These are auto-generated — don't hand-edit the blocks between `<!-- SYNC:...:BEGIN -->` and `<!-- SYNC:...:END -->` comments. To change what's listed, edit the Google Calendars themselves (the same ones embedded on `calendar.html`); a GitHub Actions workflow re-syncs the site daily, and on every push that touches `images/`. To resync immediately, run it manually from the Actions tab ("Sync events & gallery" → Run workflow) or locally with `uv run scripts/sync_content.py`. See `scripts/sync_content.py` for how events are picked (the three local calendars, next ~9 months, with any multi-day event treated as the featured festival).
+
+### Photo gallery
+
+Drop an image file into `images/` (commit + push) and the gallery on the home page picks it up automatically on the next sync — no HTML editing needed. Files named `logo-*` are skipped.
 
 ### Adding your Google Calendar embed
 
@@ -28,6 +32,7 @@ Look for the block marked `MAINTAINER NOTE` in `calendar.html`. Each event is an
 2. Copy the **Embed code** (an `<iframe>` tag)
 3. In `calendar.html`, find the `HOW TO ADD YOUR GOOGLE CALENDAR` comment block and replace it with your iframe
 4. Do the same for the Regional Calendar section below it
+5. If you change which calendars are embedded, also update `CALENDAR_IDS` in `scripts/sync_content.py` so the auto-synced events list matches
 
 ### Updating the Mailchimp newsletter link
 
@@ -53,12 +58,16 @@ tango-website/
 │   └── style.css       # All styles (dark tango theme)
 ├── js/
 │   └── main.js         # Nav toggle, FAQ accordion, calendar tabs
-└── images/             # Drop your photos here
+├── images/             # Drop your photos here — gallery auto-updates
+├── scripts/
+│   └── sync_content.py # Pulls events from Google Calendar, rebuilds the gallery
+└── .github/workflows/
+    └── sync-content.yml # Runs sync_content.py daily + on image pushes
 ```
 
 ## Adding Photos
 
-Place image files in the `images/` folder. To add a hero background image, add this to `style.css` inside `.hero`:
+Place image files in the `images/` folder — the gallery section on the home page picks them up automatically (see "Photo gallery" above). To add a hero background image, add this to `style.css` inside `.hero`:
 
 ```css
 .hero {
