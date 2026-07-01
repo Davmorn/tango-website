@@ -90,7 +90,7 @@ if (eventModal) {
     document.body.style.overflow = '';
   };
 
-  document.querySelectorAll('.upcoming-item').forEach(item => {
+  document.querySelectorAll('.upcoming-item, .event-card').forEach(item => {
     item.addEventListener('click', () => openEventModal(item));
     item.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {

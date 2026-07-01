@@ -48,7 +48,7 @@ IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 CANCELLED_RE = re.compile(r"^\s*cancell?ed\b", re.IGNORECASE)
 PREFIX_RE = re.compile(r"^[A-Z]{2,}:\s*")
 TAG_STRIP_RE = re.compile(r"<[^>]+>")
-DESCRIPTION_MAX_CHARS = 600
+BLOCK_BREAK_RE = re.compile(r"(?i)<br\s*/?>|</?(?:p|div|li|h[1-6])(?:\s[^>]*)?>")
 
 
 class Event:
@@ -75,14 +75,17 @@ class Event:
     def clean_description(self):
         """Plain-text description: calendar entries embed raw HTML (and even
         an `<html-blob>` wrapper), which we strip rather than render so we're
-        not injecting third-party markup into the page."""
+        not injecting third-party markup into the page. Block-level breaks
+        (<br>, </p>, </div>, ...) are converted to newlines first so the
+        line/paragraph structure survives instead of collapsing into a
+        single run-on line once the remaining tags are stripped."""
         if not self.description:
             return ""
-        text = html.unescape(TAG_STRIP_RE.sub(" ", self.description))
+        text = BLOCK_BREAK_RE.sub("\n", self.description)
+        text = html.unescape(TAG_STRIP_RE.sub(" ", text))
         text = re.sub(r"[ \t]+", " ", text)
-        text = re.sub(r"\n\s*\n+", "\n\n", text).strip()
-        if len(text) > DESCRIPTION_MAX_CHARS:
-            text = text[:DESCRIPTION_MAX_CHARS].rsplit(" ", 1)[0] + "…"
+        text = re.sub(r"[ \t]*\n[ \t]*", "\n", text)
+        text = re.sub(r"\n{2,}", "\n\n", text).strip()
         return text
 
     @property
@@ -222,6 +225,33 @@ def render_description_html(event):
     return "".join(paragraphs)
 
 
+def render_event_detail(event):
+    """Body of an event's detail template: tag, title, datetime, venue, and
+    description. Shared by the homepage event cards and the calendar page's
+    upcoming-events list so both link to the same detail view."""
+    venue = venue_name(event)
+    address = street_address(event)
+    location_detail = ""
+    if venue:
+        location_detail = f'<p class="modal-venue">{venue}'
+        if address:
+            location_detail += f'<br><span class="modal-address">{address}</span>'
+        location_detail += "</p>"
+        if event.location:
+            maps_url = f"https://www.google.com/maps/search/?api=1&query={quote(event.location)}"
+            location_detail += (
+                f'<p><a href="{maps_url}" target="_blank" rel="noopener" '
+                f'class="modal-directions">Get Directions</a></p>'
+            )
+    description_html = render_description_html(event)
+
+    return f"""<span class="event-tag">{classify_tag(event)}</span>
+          <h3>{event.clean_title}</h3>
+          <p class="modal-datetime">{full_date_text(event)}<br>{time_range_text(event)}</p>
+          {location_detail}
+          <div class="modal-description">{description_html}</div>"""
+
+
 def pick_featured(events):
     """First upcoming multi-day event (a festival), pulled out of the regular list."""
     for ev in events:
@@ -257,7 +287,7 @@ def render_home_events(festival, events, limit=3):
     cards = []
     for ev in events[:limit]:
         month_label, day_label = date_block(ev)
-        cards.append(f"""      <div class="event-card">
+        cards.append(f"""      <div class="event-card" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">{month_label}</div>
           <div class="day">{day_label}</div>
@@ -270,6 +300,9 @@ def render_home_events(festival, events, limit=3):
             <span>{venue_name(ev) or "See calendar for venue"}</span>
           </div>
         </div>
+        <template class="event-detail-tpl">
+          {render_event_detail(ev)}
+        </template>
       </div>""")
 
     parts.append("    <div class=\"events-grid\">\n" + "\n\n".join(cards) + "\n    </div>")
@@ -305,21 +338,6 @@ def render_calendar_events(events, limit=8):
         venue = venue_name(ev)
         location_text = f" &nbsp;·&nbsp; {venue}" if venue else ""
 
-        address = street_address(ev)
-        location_detail = ""
-        if venue:
-            location_detail = f'<p class="modal-venue">{venue}'
-            if address:
-                location_detail += f'<br><span class="modal-address">{address}</span>'
-            location_detail += "</p>"
-            if ev.location:
-                maps_url = f"https://www.google.com/maps/search/?api=1&query={quote(ev.location)}"
-                location_detail += (
-                    f'<p><a href="{maps_url}" target="_blank" rel="noopener" '
-                    f'class="modal-directions">Get Directions</a></p>'
-                )
-        description_html = render_description_html(ev)
-
         items.append(f"""      <div class="upcoming-item" tabindex="0" role="button" aria-haspopup="dialog">
         <div class="event-date-block">
           <div class="month">{month_label}</div>
@@ -333,11 +351,7 @@ def render_calendar_events(events, limit=8):
           </div>
         </div>
         <template class="event-detail-tpl">
-          <span class="event-tag">{classify_tag(ev)}</span>
-          <h3>{ev.clean_title}</h3>
-          <p class="modal-datetime">{full_date_text(ev)}<br>{time_range_text(ev)}</p>
-          {location_detail}
-          {description_html}
+          {render_event_detail(ev)}
         </template>
       </div>""")
     return "\n\n".join(items)
